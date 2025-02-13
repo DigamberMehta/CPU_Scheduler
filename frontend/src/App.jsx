@@ -1,18 +1,17 @@
-import React from 'react'
-import Login from './pages/Login'
-import { AuthProvider } from './context/authContext'
-import { Outlet } from 'react-router-dom'
-
+import React from "react";
+import { Toaster } from "sonner";
+import { AuthProvider } from "./context/authContext";
+import { Outlet } from "react-router-dom";
 
 const App = () => {
   return (
     <>
       <AuthProvider>
-         <Outlet />
-     </AuthProvider>
+        <Toaster position="top-right" richColors />
+        <Outlet />
+      </AuthProvider>
     </>
+  );
+};
 
-  )
-}
-
-export default App
+export default App;
