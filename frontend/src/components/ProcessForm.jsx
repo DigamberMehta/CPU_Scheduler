@@ -126,18 +126,18 @@ export default function ProcessForm({ algorithm, setAlgorithm, processList, setP
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <Label>Process ID</Label>
-              <Input {...register("processId")} placeholder="Enter a unique process ID (e.g., P1, P2)" required />
+              <Input className="!mt-0 !mb-4" {...register("processId")} placeholder="Enter a unique process ID (e.g., P1, P2)" required />
 
               <Label>Arrival Time</Label>
-              <Input type="number" {...register("arrivalTime")} placeholder="Enter arrival time (e.g., 0, 5, 10)" required />
+              <Input className="!mt-0 !mb-4" type="number" {...register("arrivalTime")} placeholder="Enter arrival time (e.g., 0, 5, 10)" required />
 
               <Label>Burst Time</Label>
-              <Input type="number" {...register("burstTime")} placeholder="Enter burst time (e.g., 3, 8, 12)" required />
+              <Input className="!mt-0 !mb-4" type="number" {...register("burstTime")} placeholder="Enter burst time (e.g., 3, 8, 12)" required />
 
               {algorithm === "priority" && (
                 <>
                   <Label>Priority</Label>
-                  <Input type="number" {...register("priority")} placeholder="Enter priority (1 = highest, 10 = lowest)" required />
+                  <Input className="!mt-0 !mb-4" type="number" {...register("priority")} placeholder="Enter priority (1 = highest, 10 = lowest)" required />
                 </>
               )}
 

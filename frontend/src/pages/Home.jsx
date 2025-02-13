@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import ProcessForm from "@/components/ProcessForm";
 import ProcessTable from "@/components/ProcessTable";
+import ResultTable from "@/components/ResultTable";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const Home = () => {
   const [algorithm, setAlgorithm] = useState(() => localStorage.getItem("algorithm") || ""); 
   const [processList, setProcessList] = useState([]);
   const [timeQuantum, setTimeQuantum] = useState(""); 
+  const [scheduleResult, setScheduleResult] = useState(null); // Stores API response
 
   // Load stored data on component mount
   useEffect(() => {
@@ -19,7 +24,7 @@ const Home = () => {
     if (storedTimeQuantum) setTimeQuantum(storedTimeQuantum);
   }, []);
 
-  // Save process list, algorithm, and time quantum to localStorage
+  // Save process list, algorithm, and time quantum to LocalStorage
   useEffect(() => {
     localStorage.setItem("processList", JSON.stringify(processList));
   }, [processList]);
@@ -32,18 +37,60 @@ const Home = () => {
     localStorage.setItem("timeQuantum", timeQuantum);
   }, [timeQuantum]);
 
-  return (
-    <div className="w-[90%] mx-auto mt-8 flex justify-between">
-      <ProcessForm
-        algorithm={algorithm}
-        setAlgorithm={setAlgorithm}
-        processList={processList}
-        setProcessList={setProcessList}
-        timeQuantum={timeQuantum}
-        setTimeQuantum={setTimeQuantum}
-      />
+  // Function to send data to backend API
+  const runScheduling = async () => {
+    if (!algorithm) {
+      toast.error("Please select a scheduling algorithm.");
+      return;
+    }
+    if (processList.length === 0) {
+      toast.error("Please add at least one process.");
+      return;
+    }
+    if (algorithm === "rr" && (!timeQuantum || timeQuantum <= 0)) {
+      toast.error("Please enter a valid Time Quantum for Round Robin.");
+      return;
+    }
 
-      <ProcessTable processList={processList} setProcessList={setProcessList} algorithm={algorithm} timeQuantum={timeQuantum} />
+    try {
+      const response = await axios.post("http://localhost:3000/api/schedule", {
+        algorithm,
+        processes: processList,
+        timeQuantum,
+      });
+
+      setScheduleResult(response.data); // Store API response
+      toast.success("Scheduling executed successfully!");
+    } catch (error) {
+      console.error("Error running scheduling:", error);
+      toast.error("Failed to execute scheduling.");
+    }
+  };
+
+  return (
+    <div className="w-[90%] mx-auto mt-8 flex flex-col items-center gap-6">
+      <div className="flex justify-between w-full">
+        {/* Process Form */}
+        <ProcessForm
+          algorithm={algorithm}
+          setAlgorithm={setAlgorithm}
+          processList={processList}
+          setProcessList={setProcessList}
+          timeQuantum={timeQuantum}
+          setTimeQuantum={setTimeQuantum}
+        />
+
+        {/* Process Table */}
+        <ProcessTable processList={processList} setProcessList={setProcessList} algorithm={algorithm} timeQuantum={timeQuantum} />
+      </div>
+
+      {/* Run Scheduling Button */}
+      <Button onClick={runScheduling} className="w-1/2">
+        Run Scheduling
+      </Button>
+
+      {/* Scheduling Results Table */}
+      <ResultTable scheduleResult={scheduleResult} algorithm={algorithm} timeQuantum={timeQuantum} />
     </div>
   );
 };
