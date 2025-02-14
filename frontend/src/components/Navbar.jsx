@@ -6,7 +6,7 @@ const Navbar = () => {
   const location = useLocation();
 
   return (
-    <nav className="bg-white border-gray-200 border-b">
+    <nav className="bg-white border-gray-200 border-b fixed top-0 w-full z-10">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="#" className="flex items-center space-x-3">
           <span className="self-center text-2xl font-semibold whitespace-nowrap">
