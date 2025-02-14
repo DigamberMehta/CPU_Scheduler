@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
 import { Bar } from "@visx/shape";
@@ -20,20 +20,40 @@ const GanttChart = ({ scheduleResult, algorithm }) => {
     return <p className="text-gray-500">No Gantt Chart available.</p>;
   }
 
-  const minTime = 0;
-  const maxTime = Math.max(...allExecutions.map((p) => p.endTime));
-
   const containerRef = useRef(null);
-  const [chartWidth, setChartWidth] = useState(800); // Default width
+  const [chartWidth, setChartWidth] = useState(800);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const intervalRef = useRef(null);
+
+  const sortedAllExecutions = useMemo(() => {
+    return [...allExecutions].sort((a, b) => a.startTime - b.startTime);
+  }, [allExecutions]);
+
+  const maxTime = useMemo(() => {
+    return sortedAllExecutions.length > 0 ? Math.max(...sortedAllExecutions.map((p) => p.endTime)) : 0;
+  }, [sortedAllExecutions]);
+
+  const allIdlePeriods = useMemo(() => {
+    const periods = [];
+    let previousEnd = 0;
+    for (const process of sortedAllExecutions) {
+      if (process.startTime > previousEnd) {
+        periods.push({ start: previousEnd, end: process.startTime });
+      }
+      previousEnd = Math.max(previousEnd, process.endTime);
+    }
+    return periods;
+  }, [sortedAllExecutions]);
 
   useEffect(() => {
     if (containerRef.current) {
-      setChartWidth(containerRef.current.clientWidth * 1); // 80% of parent width
+      setChartWidth(containerRef.current.clientWidth);
     }
 
     const handleResize = () => {
       if (containerRef.current) {
-        setChartWidth(containerRef.current.clientWidth * 1);
+        setChartWidth(containerRef.current.clientWidth);
       }
     };
 
@@ -41,40 +61,75 @@ const GanttChart = ({ scheduleResult, algorithm }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [scheduleResult]);
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
   const height = 80;
   const barHeight = 30;
   const padding = 50;
 
   const xScale = scaleLinear({
-    domain: [minTime, maxTime],
+    domain: [0, maxTime],
     range: [padding, chartWidth - padding],
   });
 
-  const [currentExecutions, setCurrentExecutions] = useState(allExecutions);
-  const [isVisualizing, setIsVisualizing] = useState(false);
+  const handleStart = () => {
+    if (isPlaying || currentIndex >= sortedAllExecutions.length) return;
+    setIsPlaying(true);
+    intervalRef.current = setInterval(() => {
+      setCurrentIndex((prev) => {
+        if (prev >= sortedAllExecutions.length) {
+          clearInterval(intervalRef.current);
+          setIsPlaying(false);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 1000);
+  };
+
+  const handlePause = () => {
+    setIsPlaying(false);
+    clearInterval(intervalRef.current);
+  };
+
+  const handleReset = () => {
+    setCurrentIndex(0);
+    setIsPlaying(false);
+    clearInterval(intervalRef.current);
+  };
 
   useEffect(() => {
-    setCurrentExecutions(allExecutions);
-  }, [scheduleResult]);
+    if (currentIndex >= sortedAllExecutions.length) {
+      handlePause();
+    }
+  }, [currentIndex]);
 
-  const startVisualization = () => {
-    setIsVisualizing(true);
-    let index = 0;
-    let updatedExecutions = [];
+  const displayedProcesses = sortedAllExecutions.slice(0, currentIndex);
+  const currentTime = displayedProcesses.length > 0 ? displayedProcesses[displayedProcesses.length - 1].endTime : 0;
 
-    const executeNext = () => {
-      if (index < allExecutions.length) {
-        updatedExecutions.push(allExecutions[index]);
-        setCurrentExecutions([...updatedExecutions]);
-        index++;
-        setTimeout(executeNext, 1000);
-      } else {
-        setIsVisualizing(false);
-      }
-    };
-
-    executeNext();
-  };
+  const displayedIdlePeriods = useMemo(() => {
+    return allIdlePeriods
+      .map((period) => {
+        if (period.end <= currentTime) {
+          return period;
+        } else if (period.start < currentTime) {
+          return { start: period.start, end: currentTime };
+        } else {
+          return null;
+        }
+      })
+      .filter((period) => period !== null);
+  }, [allIdlePeriods, currentTime]);
 
   return (
     <div ref={containerRef} className="w-full flex flex-col items-center mt-6 border-2 border-gray-200 rounded-lg shadow-lg p-4">
@@ -82,27 +137,59 @@ const GanttChart = ({ scheduleResult, algorithm }) => {
         <CardTitle className="!text-left !p-0">Gantt Chart</CardTitle>
       </CardHeader>
 
-      <Button onClick={startVisualization} disabled={isVisualizing}>
-        {isVisualizing ? "Visualizing..." : "Visualize Execution"}
-      </Button>
+      <div className="flex gap-2 mb-4">
+        <Button 
+          onClick={handleStart} 
+          disabled={isPlaying || currentIndex >= sortedAllExecutions.length}
+        >
+          {isPlaying ? "Resuming..." : currentIndex === 0 ? "Start" : "Resume"}
+        </Button>
+        <Button onClick={handlePause} disabled={!isPlaying}>
+          Pause
+        </Button>
+        <Button onClick={handleReset} disabled={currentIndex === 0}>
+          Reset
+        </Button>
+      </div>
 
       <svg width={chartWidth} height={height + 50}>
+        <defs>
+          <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="8" height="8">
+            <rect width="8" height="8" fill="#f0f0f0" />
+            <path d="M0,0 L8,8" stroke="#999" strokeWidth="1" />
+          </pattern>
+        </defs>
         <Group top={30}>
-          {currentExecutions.length > 0 &&
-            currentExecutions.map((process, index) => {
-              if (!process || process.startTime === undefined || process.endTime === undefined) return null;
+          {displayedIdlePeriods.map((period, index) => {
+            const barX = xScale(period.start);
+            const barWidth = xScale(period.end) - barX;
+            return (
+              <Bar
+                key={`idle-${index}`}
+                x={barX}
+                y={40}
+                width={barWidth}
+                height={barHeight}
+                fill="url(#diagonalHatch)"
+                stroke="#ccc"
+                strokeWidth={0.5}
+              />
+            );
+          })}
+          {displayedProcesses.map((process, index) => {
+            if (!process || process.startTime === undefined || process.endTime === undefined) return null;
 
-              const barX = xScale(process.startTime);
-              const barWidth = xScale(process.endTime) - barX;
-              return (
-                <Group key={`${process.id}-${index}`}>
-                  <Bar x={barX} y={40} width={barWidth} height={barHeight} fill={getColor(process.id)} stroke="#333" />
-                  <Text x={barX + barWidth / 2} y={55} dy=".35em" fontSize={14} textAnchor="middle" fill="#fff">
-                    {process.id}
-                  </Text>
-                </Group>
-              );
-            })}
+            const barX = xScale(process.startTime);
+            const barWidth = xScale(process.endTime) - barX;
+            return (
+              <Group key={`${process.id}-${index}`}>
+                <Bar x={barX} y={40} width={barWidth} height={barHeight} fill={getColor(process.id)} stroke="#333" />
+                <Text x={barX + barWidth / 2} y={55} dy=".35em" fontSize={14} textAnchor="middle" fill="#fff">
+                  {process.id}
+                </Text>
+              </Group>
+            );
+          })}
           <AxisBottom
             scale={xScale}
             top={barHeight + 50}
