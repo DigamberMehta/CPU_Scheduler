@@ -71,7 +71,7 @@ const Home = () => {
 
   return (
     <>
-    <Navbar />
+    
   
     <div className="w-[90%] mx-auto mt-8 flex flex-col items-center gap-6">
       

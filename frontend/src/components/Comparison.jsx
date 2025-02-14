@@ -6,6 +6,9 @@ import ComparisonResults from "@/components/ComparisonResults";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import ComparisonChart from "./ComparisonChart";
+import ProcessComparisonChart from "@/components/ProcessComparisonChart";
+
 
 export default function Comparison() {
   const [selectedAlgorithms, setSelectedAlgorithms] = useState([]);
@@ -108,6 +111,10 @@ export default function Comparison() {
       </div>
 
       <ComparisonResults comparisonResults={comparisonResults} />
+      <ProcessComparisonChart comparisonResults={comparisonResults} />
+
+      <ComparisonChart comparisonResults={comparisonResults} />
+
 
       
       <Dialog open={showPriorityDialog} onOpenChange={setShowPriorityDialog}>

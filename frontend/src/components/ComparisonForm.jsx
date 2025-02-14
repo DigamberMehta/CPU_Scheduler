@@ -28,7 +28,7 @@ export default function ComparisonForm({
   const [showPriorityDialog, setShowPriorityDialog] = useState(false);
   const [priorityConflict, setPriorityConflict] = useState(false);
 
-  // ✅ Load stored data on component mount
+  
   useEffect(() => {
     const storedProcesses = JSON.parse(localStorage.getItem("comparisonProcesses")) || [];
     const storedAlgorithms = JSON.parse(localStorage.getItem("selectedAlgorithms")) || [];
@@ -39,7 +39,7 @@ export default function ComparisonForm({
     setTimeQuantum(storedTimeQuantum);
   }, []);
 
-  // ✅ Save processes, algorithms & TQ to LocalStorage when they change
+  
   useEffect(() => {
     localStorage.setItem("comparisonProcesses", JSON.stringify(comparisonProcesses));
   }, [comparisonProcesses]);
@@ -52,7 +52,7 @@ export default function ComparisonForm({
     localStorage.setItem("timeQuantum", timeQuantum);
   }, [timeQuantum]);
 
-  // ✅ Handle Algorithm Selection Without Clearing Processes
+  
   const handleAlgorithmChange = (algorithm) => {
     let updatedAlgorithms = [...selectedAlgorithms];
 
@@ -66,11 +66,11 @@ export default function ComparisonForm({
     toast.success("Algorithms updated for comparison!");
   };
 
-  // ✅ Check for Duplicate Process IDs
+  
   const checkDuplicateProcessId = (id) =>
     comparisonProcesses.some((process) => process.id.toLowerCase() === id.toLowerCase());
 
-  // ✅ Handle Process Submission
+  
   const onSubmit = (data) => {
     if (checkDuplicateProcessId(data.processId)) {
       toast.error("Process ID must be unique!");
@@ -82,7 +82,7 @@ export default function ComparisonForm({
       return;
     }
 
-    // ✅ Ensure Priority Consistency
+    
     if (selectedAlgorithms.includes("priority")) {
       const hasPriorityValues = comparisonProcesses.some((p) => p.priority !== undefined);
       const missingPriorityValues = comparisonProcesses.some((p) => p.priority === undefined);
@@ -94,13 +94,13 @@ export default function ComparisonForm({
       }
     }
 
-    // ✅ Ensure TQ is Set If RR is Selected
+    
     if (selectedAlgorithms.includes("rr") && (!timeQuantum || timeQuantum <= 0)) {
       toast.error("Please enter a valid Time Quantum for Round Robin.");
       return;
     }
 
-    // ✅ Add Process Without TQ (Since TQ is Global)
+    
     const newProcess = {
       id: data.processId,
       arrivalTime: parseInt(data.arrivalTime),
@@ -113,7 +113,7 @@ export default function ComparisonForm({
     reset();
   };
 
-  // ✅ Resolve Priority Conflict
+  
   const resolvePriorityConflict = (action) => {
     if (action === "set_all") {
       toast.info("Please enter priority values for all processes in the table.");
@@ -150,7 +150,7 @@ export default function ComparisonForm({
               ))}
             </div>
 
-            {/* ✅ Time Quantum Input Always Visible */}
+            
             <div className="mt-4">
               <Label>Time Quantum (for RR)</Label>
               <Input
@@ -173,7 +173,7 @@ export default function ComparisonForm({
               <Label>Burst Time</Label>
               <Input className="!mt-0 !mb-4" type="number" {...register("burstTime")} placeholder="Enter burst time (e.g., 3, 8, 12)" required />
 
-              {/* ✅ Priority Always Visible */}
+              
               <Label>Priority (for Priority Scheduling)</Label>
               <Input className="!mt-0 !mb-4" type="number" {...register("priority")} placeholder="Enter priority (1 = highest, 10 = lowest)" />
 
@@ -185,7 +185,7 @@ export default function ComparisonForm({
         </Card>
       </div>
 
-      {/* ✅ ShadCN Dialog for Priority Conflict Resolution */}
+      
       <Dialog open={showPriorityDialog} onOpenChange={setShowPriorityDialog}>
         <DialogContent>
           <DialogHeader>

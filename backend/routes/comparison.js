@@ -6,7 +6,7 @@ import roundRobin from "../schedulingAlgorithms/roundRobin.js";
 
 const router = express.Router();
 
-// 🔹 Route: Run Comparison for Multiple Algorithms → POST /api/compare
+//  Route: Run Comparison for Multiple Algorithms → POST /api/compare
 router.post("/compare", (req, res) => {
   const { algorithms, processes, timeQuantum } = req.body;
 

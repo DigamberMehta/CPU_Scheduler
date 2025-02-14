@@ -1,49 +1,20 @@
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   return (
     <nav className="bg-white border-gray-200 border-b">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="#" className="flex items-center space-x-3">
-         
           <span className="self-center text-2xl font-semibold whitespace-nowrap">
-            CPU scheduling simulator
+            CPU Scheduling Simulator
           </span>
         </a>
 
-        <div className="flex md:order-2">
-          <button
-            type="button"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 rounded-lg text-sm p-2.5 me-1"
-          >
-            <svg
-              className="w-5 h-5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 20"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-              />
-            </svg>
-          </button>
-
-          <div className="relative hidden md:block">
-            <input
-              type="text"
-              className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Search..."
-            />
-          </div>
-
+        <div className="flex md:order-2 md:hidden">
           <button
             type="button"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -74,29 +45,29 @@ const Navbar = () => {
         >
           <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:bg-white">
             <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0"
-                aria-current="page"
+              <Link
+                to="/"
+                className={`block py-2 px-3 rounded-sm ${
+                  location.pathname === "/"
+                    ? "text-blue-700 font-semibold"
+                    : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700"
+                }`}
               >
                 Home
-              </a>
+              </Link>
             </li>
+
             <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0"
+              <Link
+                to="/comparison"
+                className={`block py-2 px-3 rounded-sm ${
+                  location.pathname === "/comparison"
+                    ? "text-blue-700 font-semibold"
+                    : "text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700"
+                }`}
               >
-                About
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0"
-              >
-                Services
-              </a>
+                Compare Algorithms
+              </Link>
             </li>
           </ul>
         </div>

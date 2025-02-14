@@ -7,7 +7,7 @@ import { Text } from "@visx/text";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-// Define colors for processes
+
 const colors = ["#4CAF50", "#FF9800", "#2196F3", "#FF5722", "#9C27B0", "#3F51B5", "#00BCD4", "#FFEB3B"];
 
 const getColor = (id) => colors[parseInt(id.replace(/\D/g, ""), 10) % colors.length];
