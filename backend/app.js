@@ -16,7 +16,7 @@ app.use(express.json());
 // Default middlewares
 app.use(express.json());
 app.use(cors({
-    origin: "*",
+    origin: ["http://localhost:5173", "https://cpu-simulator-seven.vercel.app"],
     credentials: true
 }));
 app.use(cookieParser());
