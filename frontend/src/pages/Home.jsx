@@ -55,7 +55,7 @@ const Home = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/api/schedule", {
+      const response = await axios.post("https://cpu-simulator-x2gs.onrender.com/api/schedule", {
         algorithm,
         processes: processList,
         timeQuantum,

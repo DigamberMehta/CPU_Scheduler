@@ -53,7 +53,7 @@ export default function Comparison() {
 
   const runComparison = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/api/compare", {
+      const response = await axios.post("https://cpu-simulator-x2gs.onrender.com/api/compare", {
         algorithms: selectedAlgorithms,
         processes: comparisonProcesses,
         timeQuantum: selectedAlgorithms.includes("rr") ? timeQuantum : undefined,
