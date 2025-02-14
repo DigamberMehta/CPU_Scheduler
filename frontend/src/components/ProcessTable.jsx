@@ -45,11 +45,11 @@ export default function ProcessTable({ processList = [], setProcessList, algorit
   };
 
   return (
-    <Card className="max-w-3xl shadow-lg w-[55%]">
+    <Card className="max-full shadow-lg lg:w-[55%]">
       <CardHeader>
         <CardTitle>Process List ({algorithm ? algorithm.toUpperCase() : "Select Algorithm"})</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="!p-3 !md:p-6">
         <Table>
           <TableHeader>
             <TableRow>

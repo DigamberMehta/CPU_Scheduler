@@ -75,7 +75,7 @@ export default function ProcessForm({ algorithm, setAlgorithm, processList, setP
 
   return (
     <>
-      <div className="w-[40%]">
+      <div className="w-full mb-8 lg:mb-0 lg:w-[40%]">
         <Dialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
           <DialogContent>
             <DialogHeader>

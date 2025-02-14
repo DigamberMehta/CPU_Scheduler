@@ -73,9 +73,9 @@ const Home = () => {
     <>
     
   
-    <div className="w-[90%] mx-auto mt-8 flex flex-col items-center gap-6">
+    <div className="w-[95%] sm:w-[90%] mx-auto mt-8 flex flex-col items-center gap-6">
       
-      <div className="flex justify-between w-full">
+      <div className="flex justify-between w-full flex-col lg:flex-row">
         {/* Process Form */}
         <ProcessForm
           algorithm={algorithm}
@@ -91,13 +91,14 @@ const Home = () => {
       </div>
 
       {/* Run Scheduling Button */}
-      <div className="w-full flex ">
-        <div className="w-[40%] flex justify-center">
-      <Button onClick={runScheduling} className="w-1/2">
-        Run Scheduling
-      </Button>
+      <div className="w-full flex justify-center">
+        <div className="w-[250px] flex justify-center">
+          <Button onClick={runScheduling} className="w-1/2">
+            Run Scheduling
+          </Button>
+        </div>
       </div>
-      </div>
+
       {/* Scheduling Results Table */}
       <ResultTable scheduleResult={scheduleResult} algorithm={algorithm} timeQuantum={timeQuantum} />
       
