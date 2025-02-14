@@ -5,6 +5,7 @@ import cors from "cors";
 import userRoutes from "./routes/user.route.js";
 import cookieParser from "cookie-parser";
 import scheduleRoutes from "./routes/scheduleRoutes.js";
+import comparisonRoutes from "./routes/comparison.js"
 
 
 dotenv.config({});
@@ -23,6 +24,7 @@ app.use(cookieParser());
 //apis
 app.use("/api/v1/user", userRoutes);
 app.use("/api/schedule", scheduleRoutes);
+app.use("/api", comparisonRoutes);
 
 // call the connectDB function
 connectDB();

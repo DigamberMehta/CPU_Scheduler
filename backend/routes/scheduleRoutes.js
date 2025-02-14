@@ -6,7 +6,7 @@ import roundRobin from "../schedulingAlgorithms/roundRobin.js";
 
 const router = express.Router();
 
-// Route: POST /api/schedule
+// 🔹 Route: Run a Single Algorithm → POST /api/schedule
 router.post("/", (req, res) => {
   const { algorithm, processes, timeQuantum } = req.body;
 

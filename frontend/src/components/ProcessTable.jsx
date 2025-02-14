@@ -22,14 +22,26 @@ export default function ProcessTable({ processList = [], setProcessList, algorit
 
   const handleSave = (index) => {
     const updatedProcesses = [...processList];
-    updatedProcesses[index] = editedProcess;
+
+    updatedProcesses[index] = {
+      ...editedProcess,
+      arrivalTime: Number(editedProcess.arrivalTime), // ✅ Convert to number
+      burstTime: Number(editedProcess.burstTime), // ✅ Convert to number
+      priority: algorithm === "priority" ? Number(editedProcess.priority) : undefined, // ✅ Convert to number (if applicable)
+    };
+
     setProcessList(updatedProcesses);
     setEditIndex(null);
     toast.success("Process updated!");
   };
 
   const handleChange = (e, field) => {
-    setEditedProcess((prev) => ({ ...prev, [field]: e.target.value }));
+    setEditedProcess((prev) => ({
+      ...prev,
+      [field]: field === "arrivalTime" || field === "burstTime" || field === "priority" 
+        ? Number(e.target.value) 
+        : e.target.value, // ✅ Convert to number
+    }));
   };
 
   return (
@@ -55,12 +67,7 @@ export default function ProcessTable({ processList = [], setProcessList, algorit
                 <TableRow key={index}>
                   <TableCell>
                     {editIndex === index ? (
-                      <Input
-                        value={editedProcess.id}
-                        onChange={(e) => handleChange(e, "id")}
-                        disabled
-                        className="w-16"
-                      />
+                      <Input value={editedProcess.id} disabled className="w-16" />
                     ) : (
                       process.id
                     )}

@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import { AuthProvider } from './context/authContext'
+import Comparison from './components/Comparison'
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: '/auth',
         element: <Login />,
+      },
+      {
+        path: '/comparison',
+        element: <Comparison />,
       },
     ],
   },
