@@ -16,8 +16,8 @@ const priorityScheduling = (processes) => {
       availableProcesses.sort((a, b) => a.priority - b.priority);
   
       let process = availableProcesses[0];
-      let startTime = Math.max(currentTime, process.arrivalTime);
-      let endTime = startTime + process.burstTime;
+      let startTime = Math.max(currentTime, process.arrivalTime); 
+      let endTime = startTime + process.burstTime; 
       let completionTime = endTime;
       let turnaroundTime = completionTime - process.arrivalTime;
       let waitingTime = turnaroundTime - process.burstTime;
@@ -27,6 +27,8 @@ const priorityScheduling = (processes) => {
         arrivalTime: process.arrivalTime,
         burstTime: process.burstTime,
         priority: process.priority,
+        startTime, // ✅ Now included in result
+        endTime,   // ✅ Now included in result
         completionTime,
         turnaroundTime,
         waitingTime,
@@ -52,5 +54,4 @@ const priorityScheduling = (processes) => {
     };
   };
   
-  export default priorityScheduling;
-  
+export default priorityScheduling;

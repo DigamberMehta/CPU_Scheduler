@@ -4,6 +4,7 @@ import ProcessForm from "@/components/ProcessForm";
 import ProcessTable from "@/components/ProcessTable";
 import ResultTable from "@/components/ResultTable";
 import { Button } from "@/components/ui/button";
+import GanttChart from "@/components/GanttChart";
 import { toast } from "sonner";
 
 const Home = () => {
@@ -91,6 +92,9 @@ const Home = () => {
 
       {/* Scheduling Results Table */}
       <ResultTable scheduleResult={scheduleResult} algorithm={algorithm} timeQuantum={timeQuantum} />
+      
+      {/* Gantt Chart */}
+      <GanttChart scheduleResult={scheduleResult} algorithm={algorithm}/>
     </div>
   );
 };

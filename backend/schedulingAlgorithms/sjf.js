@@ -16,8 +16,8 @@ const sjf = (processes) => {
       availableProcesses.sort((a, b) => a.burstTime - b.burstTime);
   
       let process = availableProcesses[0];
-      let startTime = Math.max(currentTime, process.arrivalTime);
-      let endTime = startTime + process.burstTime;
+      let startTime = Math.max(currentTime, process.arrivalTime);  
+      let endTime = startTime + process.burstTime;  
       let completionTime = endTime;
       let turnaroundTime = completionTime - process.arrivalTime;
       let waitingTime = turnaroundTime - process.burstTime;
@@ -26,6 +26,8 @@ const sjf = (processes) => {
         id: process.id,
         arrivalTime: process.arrivalTime,
         burstTime: process.burstTime,
+        startTime,  
+        endTime,   
         completionTime,
         turnaroundTime,
         waitingTime,
@@ -51,5 +53,4 @@ const sjf = (processes) => {
     };
   };
   
-  export default sjf;
-  
+export default sjf;

@@ -7,8 +7,8 @@ const fcfs = (processes) => {
     let result = [];
   
     processes.forEach((process) => {
-      let startTime = Math.max(currentTime, process.arrivalTime);
-      let endTime = startTime + process.burstTime;
+      let startTime = Math.max(currentTime, process.arrivalTime); 
+      let endTime = startTime + process.burstTime; 
       let completionTime = endTime;
       let turnaroundTime = completionTime - process.arrivalTime;
       let waitingTime = turnaroundTime - process.burstTime;
@@ -17,6 +17,8 @@ const fcfs = (processes) => {
         id: process.id,
         arrivalTime: process.arrivalTime,
         burstTime: process.burstTime,
+        startTime, 
+        endTime,   
         completionTime,
         turnaroundTime,
         waitingTime,
@@ -40,5 +42,4 @@ const fcfs = (processes) => {
     };
   };
   
-  export default fcfs;
-  
+export default fcfs;
