@@ -15,9 +15,25 @@ export default function ResultTable({ scheduleResult, algorithm, timeQuantum }) 
     );
   }
 
+  // 1️⃣ Convert schedule data to numeric values to avoid "string vs. number" issues.
+  const schedule = scheduleResult.schedule.map((p) => ({
+    ...p,
+    arrivalTime: Number(p.arrivalTime),
+    burstTime: Number(p.burstTime),
+    waitingTime: Number(p.waitingTime),
+    turnaroundTime: Number(p.turnaroundTime),
+    completionTime: Number(p.completionTime),
+  }));
+
+  // 2️⃣ Compute CPU Utilization using consistent, purely simulated values.
+  const totalExecutionTime = schedule.reduce((sum, p) => sum + p.burstTime, 0);
+  const totalTime = Math.max(...schedule.map((p) => p.completionTime), 1); // avoid division by zero
+  const cpuUtilization = (totalExecutionTime / totalTime) * 100;
+
   return (
     <Card className="w-full mt-6 shadow-lg">
       <CardHeader>
+        {/* If you want to show the chosen algorithm, you can do so here */}
         <CardTitle>Scheduling Results ({scheduleResult.algorithm})</CardTitle>
       </CardHeader>
       <CardContent>
@@ -35,7 +51,7 @@ export default function ResultTable({ scheduleResult, algorithm, timeQuantum }) 
             </TableRow>
           </TableHeader>
           <TableBody>
-            {scheduleResult.schedule.map((process, index) => (
+            {schedule.map((process, index) => (
               <TableRow key={index}>
                 <TableCell>{process.id}</TableCell>
                 <TableCell>{process.arrivalTime}</TableCell>
@@ -50,21 +66,31 @@ export default function ResultTable({ scheduleResult, algorithm, timeQuantum }) 
           </TableBody>
         </Table>
 
-        {/* Summary Metrics */}
-        <div className="mt-6 rounded-lg border-2  p-4  text-gray-800">
-          <h3 className="text-xl font-semibold mb-4">Performance Metrics</h3>
-          <div className="flex justify-between text-lg">
+        {/* Summary Metrics with CPU Utilization */}
+        <div className="mt-6 rounded-lg border-2 p-4 text-gray-800">
+          <h3 className="font-semibold mb-4">Performance Metrics</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-lg">
             <div className="text-center">
               <p className="font-medium text-gray-700">Avg Waiting Time</p>
-              <p className="text-xl font-bold text-blue-600">{scheduleResult.avgWaitingTime.toFixed(2)} ms</p>
+              <p className="text-sm text-blue-600">
+                {scheduleResult.avgWaitingTime.toFixed(2)} ms
+              </p>
             </div>
             <div className="text-center">
               <p className="font-medium text-gray-700">Avg Turnaround Time</p>
-              <p className="text-xl font-bold text-green-600">{scheduleResult.avgTurnaroundTime.toFixed(2)} ms</p>
+              <p className="text-sm text-green-600">
+                {scheduleResult.avgTurnaroundTime.toFixed(2)} ms
+              </p>
             </div>
             <div className="text-center">
               <p className="font-medium text-gray-700">Throughput</p>
-              <p className="text-xl font-bold text-red-600">{scheduleResult.throughput.toFixed(2)} processes/unit time</p>
+              <p className="text-sm text-red-600">
+                {scheduleResult.throughput.toFixed(2)} processes/unit time
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="font-medium text-gray-700">CPU Utilization</p>
+              <p className="text-sm text-purple-600">{cpuUtilization.toFixed(2)}%</p>
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import ResultTable from "@/components/ResultTable";
 import { Button } from "@/components/ui/button";
 import GanttChart from "@/components/GanttChart";
 import { toast } from "sonner";
+import Navbar from "@/components/Navbar";
 
 const Home = () => {
   const [algorithm, setAlgorithm] = useState(() => localStorage.getItem("algorithm") || ""); 
@@ -69,7 +70,11 @@ const Home = () => {
   };
 
   return (
+    <>
+    <Navbar />
+  
     <div className="w-[90%] mx-auto mt-8 flex flex-col items-center gap-6">
+      
       <div className="flex justify-between w-full">
         {/* Process Form */}
         <ProcessForm
@@ -86,16 +91,20 @@ const Home = () => {
       </div>
 
       {/* Run Scheduling Button */}
+      <div className="w-full flex ">
+        <div className="w-[40%] flex justify-center">
       <Button onClick={runScheduling} className="w-1/2">
         Run Scheduling
       </Button>
-
+      </div>
+      </div>
       {/* Scheduling Results Table */}
       <ResultTable scheduleResult={scheduleResult} algorithm={algorithm} timeQuantum={timeQuantum} />
       
       {/* Gantt Chart */}
       <GanttChart scheduleResult={scheduleResult} algorithm={algorithm}/>
     </div>
+    </>
   );
 };
 
