@@ -131,7 +131,7 @@ export default function ComparisonForm({
 
   return (
     <>
-      <div className="w-[40%]">
+      <div className="w-full lg:w-[40%] mb-8 lg:mb-0">
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>CPU Scheduling Comparison</CardTitle>

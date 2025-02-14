@@ -85,7 +85,7 @@ export default function Comparison() {
 
   return (
     <div className="w-[90%] mx-auto mt-8 flex flex-col items-center gap-6">
-      <div className="flex justify-between w-full">
+      <div className="flex justify-between w-full flex-col lg:flex-row">
         <ComparisonForm
           selectedAlgorithms={selectedAlgorithms}
           setSelectedAlgorithms={setSelectedAlgorithms}

@@ -128,8 +128,8 @@ export default function ComparisonProcessTable({
         </DialogContent>
       </Dialog>
 
-      {/* 🔹 Process Table */}
-      <Card className="max-w-3xl shadow-lg w-[55%]">
+      {/*  Process Table */}
+      <Card className="w-full shadow-lg lg:w-[55%]">
         <CardHeader>
           <CardTitle>Processes for Comparison</CardTitle>
         </CardHeader>
