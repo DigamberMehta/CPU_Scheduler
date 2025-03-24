@@ -6,6 +6,7 @@ import { AxisBottom } from "@visx/axis";
 import { Text } from "@visx/text";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 const colors = ["#4CAF50", "#FF9800", "#2196F3", "#FF5722", "#9C27B0", "#3F51B5", "#00BCD4", "#FFEB3B"];
 const getColor = (id) => colors[parseInt(id.replace(/\D/g, ""), 10) % colors.length];
@@ -35,7 +36,7 @@ const GanttChart = ({ scheduleResult, algorithm }) => {
   }, [sortedAllExecutions]);
 
   const allIdlePeriods = useMemo(() => {
-    const periods = [];
+    const periods =[];
     let previousEnd = 0;
     for (const process of sortedAllExecutions) {
       if (process.startTime > previousEnd) {
@@ -59,7 +60,7 @@ const GanttChart = ({ scheduleResult, algorithm }) => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  },);
 
   useEffect(() => {
     setCurrentIndex(0);
@@ -71,7 +72,7 @@ const GanttChart = ({ scheduleResult, algorithm }) => {
         clearInterval(intervalRef.current);
       }
     };
-  }, []);
+  },[]);
 
   const height = 80;
   const barHeight = 30;
@@ -138,8 +139,8 @@ const GanttChart = ({ scheduleResult, algorithm }) => {
       </CardHeader>
 
       <div className="flex gap-2 mb-4">
-        <Button 
-          onClick={handleStart} 
+        <Button
+          onClick={handleStart}
           disabled={isPlaying || currentIndex >= sortedAllExecutions.length}
         >
           {isPlaying ? "Resuming..." : currentIndex === 0 ? "Start" : "Resume"}
@@ -164,15 +165,17 @@ const GanttChart = ({ scheduleResult, algorithm }) => {
             const barX = xScale(period.start);
             const barWidth = xScale(period.end) - barX;
             return (
-              <Bar
+              <motion.rect
                 key={`idle-${index}`}
                 x={barX}
                 y={40}
-                width={barWidth}
                 height={barHeight}
                 fill="url(#diagonalHatch)"
                 stroke="#ccc"
                 strokeWidth={0.5}
+                initial={{ width: 0 }}
+                animate={{ width: barWidth }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
               />
             );
           })}
@@ -183,7 +186,16 @@ const GanttChart = ({ scheduleResult, algorithm }) => {
             const barWidth = xScale(process.endTime) - barX;
             return (
               <Group key={`${process.id}-${index}`}>
-                <Bar x={barX} y={40} width={barWidth} height={barHeight} fill={getColor(process.id)} stroke="#333" />
+                <motion.rect
+                  x={barX}
+                  y={40}
+                  height={barHeight}
+                  fill={getColor(process.id)}
+                  stroke="#333"
+                  initial={{ width: 0 }}
+                  animate={{ width: barWidth }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                />
                 <Text x={barX + barWidth / 2} y={55} dy=".35em" fontSize={14} textAnchor="middle" fill="#fff">
                   {process.id}
                 </Text>
