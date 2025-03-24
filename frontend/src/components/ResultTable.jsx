@@ -15,7 +15,7 @@ export default function ResultTable({ scheduleResult, algorithm, timeQuantum }) 
     );
   }
 
-  // 1️⃣ Convert schedule data to numeric values to avoid "string vs. number" issues.
+  //  Convert schedule data to numeric values to avoid "string vs. number" issues.
   const schedule = scheduleResult.schedule.map((p) => ({
     ...p,
     arrivalTime: Number(p.arrivalTime),
@@ -25,7 +25,7 @@ export default function ResultTable({ scheduleResult, algorithm, timeQuantum }) 
     completionTime: Number(p.completionTime),
   }));
 
-  // 2️⃣ Compute CPU Utilization using consistent, purely simulated values.
+  // Compute CPU Utilization using consistent, purely simulated values.
   const totalExecutionTime = schedule.reduce((sum, p) => sum + p.burstTime, 0);
   const totalTime = Math.max(...schedule.map((p) => p.completionTime), 1); // avoid division by zero
   const cpuUtilization = (totalExecutionTime / totalTime) * 100;

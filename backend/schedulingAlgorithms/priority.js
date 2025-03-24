@@ -27,8 +27,8 @@ const priorityScheduling = (processes) => {
         arrivalTime: process.arrivalTime,
         burstTime: process.burstTime,
         priority: process.priority,
-        startTime, // ✅ Now included in result
-        endTime,   // ✅ Now included in result
+        startTime, 
+        endTime,   
         completionTime,
         turnaroundTime,
         waitingTime,

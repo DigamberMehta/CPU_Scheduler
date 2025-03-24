@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import ComparisonChart from "./ComparisonChart";
 import ProcessComparisonChart from "@/components/ProcessComparisonChart";
 
-
 export default function Comparison() {
   const [selectedAlgorithms, setSelectedAlgorithms] = useState([]);
   const [comparisonProcesses, setComparisonProcesses] = useState([]);
@@ -18,18 +17,20 @@ export default function Comparison() {
   const [showPriorityDialog, setShowPriorityDialog] = useState(false);
   const [showTQDialog, setShowTQDialog] = useState(false);
   const [missingPriorityProcesses, setMissingPriorityProcesses] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const validateAndRunComparison = async () => {
+    setIsLoading(true);
     if (selectedAlgorithms.length === 0) {
       toast.error("Please select at least one scheduling algorithm.");
+      setIsLoading(false);
       return;
     }
     if (comparisonProcesses.length === 0) {
       toast.error("Please add at least one process for comparison.");
+      setIsLoading(false);
       return;
     }
-
 
     if (selectedAlgorithms.includes("priority")) {
       const missingPriority = comparisonProcesses.filter((p) => p.priority === undefined);
@@ -37,19 +38,19 @@ export default function Comparison() {
       if (missingPriority.length > 0) {
         setMissingPriorityProcesses(missingPriority);
         setShowPriorityDialog(true);
+        setIsLoading(false);
         return;
       }
     }
 
-
     if (selectedAlgorithms.includes("rr") && (!timeQuantum || timeQuantum <= 0)) {
       setShowTQDialog(true);
+      setIsLoading(false);
       return;
     }
 
-    runComparison();
+    await runComparison();
   };
-
 
   const runComparison = async () => {
     try {
@@ -64,9 +65,10 @@ export default function Comparison() {
     } catch (error) {
       console.error("Error running comparison:", error);
       toast.error("Failed to execute comparison.");
+    } finally {
+      setIsLoading(false);
     }
   };
-
 
   const removePriorityScheduling = () => {
     const updatedAlgorithms = selectedAlgorithms.filter((algo) => algo !== "priority");
@@ -74,7 +76,6 @@ export default function Comparison() {
     setShowPriorityDialog(false);
     toast.success("Priority Scheduling removed.");
   };
-
 
   const removeRoundRobin = () => {
     const updatedAlgorithms = selectedAlgorithms.filter((algo) => algo !== "rr");
@@ -105,18 +106,49 @@ export default function Comparison() {
       </div>
 
       <div className="w-full flex justify-center">
-        <Button onClick={validateAndRunComparison} className="w-1/3">
-          Run Comparison
+        <Button 
+          onClick={validateAndRunComparison} 
+          className="w-1/3 min-w-[200px]" 
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <svg 
+                className="animate-spin h-5 w-5 text-white" 
+                xmlns="http://www.w3.org/2000/svg" 
+                fill="none" 
+                viewBox="0 0 24 24"
+              >
+                <circle 
+                  className="opacity-25" 
+                  cx="12" 
+                  cy="12" 
+                  r="10" 
+                  stroke="currentColor" 
+                  strokeWidth="4"
+                ></circle>
+                <path 
+                  className="opacity-75" 
+                  fill="currentColor" 
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            </div>
+          ) : (
+            "Run Comparison"
+          )}
         </Button>
       </div>
 
-      <ComparisonResults comparisonResults={comparisonResults} />
-      <ProcessComparisonChart comparisonResults={comparisonResults} />
+      {comparisonResults.length > 0 && (
+        <>
+          <ComparisonResults comparisonResults={comparisonResults} />
+          <ProcessComparisonChart comparisonResults={comparisonResults} />
+          <ComparisonChart comparisonResults={comparisonResults} />
+        </>
+      )}
 
-      <ComparisonChart comparisonResults={comparisonResults} />
-
-
-      
+      {/* Priority Conflict Dialog */}
       <Dialog open={showPriorityDialog} onOpenChange={setShowPriorityDialog}>
         <DialogContent>
           <DialogHeader>
@@ -132,7 +164,7 @@ export default function Comparison() {
               variant="outline"
               onClick={() => {
                 toast.info("Please edit priority values manually.");
-                setShowPriorityDialog(false); // Close the dialog
+                setShowPriorityDialog(false);
               }}
             >
               Edit Manually
@@ -144,7 +176,7 @@ export default function Comparison() {
         </DialogContent>
       </Dialog>
 
-      
+      {/* Time Quantum Dialog */}
       <Dialog open={showTQDialog} onOpenChange={setShowTQDialog}>
         <DialogContent>
           <DialogHeader>
@@ -154,27 +186,21 @@ export default function Comparison() {
             You have selected <b> Round Robin</b>, but no Time Quantum is set. Please enter a valid value.
           </p>
           <DialogFooter>
-
-          <Button variant="outline" onClick={() => setShowTQDialog(false)}>
+            <Button variant="outline" onClick={() => setShowTQDialog(false)}>
               Edit Manually
             </Button>
-
             <Button
               variant="destructive"
               onClick={() => {
-                toast.info("Please enter TQ in the input field.");
-                setShowTQDialog(false); 
-                removeRoundRobin();  
+                removeRoundRobin();
+                setShowTQDialog(false);
               }}
             >
-              Remove Priority Scheduling
+              Remove Round Robin
             </Button>
-          
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
   );
 }
-
-

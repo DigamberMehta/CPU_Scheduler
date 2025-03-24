@@ -25,9 +25,9 @@ export default function ProcessTable({ processList = [], setProcessList, algorit
 
     updatedProcesses[index] = {
       ...editedProcess,
-      arrivalTime: Number(editedProcess.arrivalTime), // ✅ Convert to number
-      burstTime: Number(editedProcess.burstTime), // ✅ Convert to number
-      priority: algorithm === "priority" ? Number(editedProcess.priority) : undefined, // ✅ Convert to number (if applicable)
+      arrivalTime: Number(editedProcess.arrivalTime), //  Convert to number
+      burstTime: Number(editedProcess.burstTime), //  Convert to number
+      priority: algorithm === "priority" ? Number(editedProcess.priority) : undefined, //  Convert to number (if applicable)
     };
 
     setProcessList(updatedProcesses);
@@ -40,7 +40,7 @@ export default function ProcessTable({ processList = [], setProcessList, algorit
       ...prev,
       [field]: field === "arrivalTime" || field === "burstTime" || field === "priority" 
         ? Number(e.target.value) 
-        : e.target.value, // ✅ Convert to number
+        : e.target.value, //  Convert to number
     }));
   };
 
