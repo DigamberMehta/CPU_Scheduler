@@ -37,7 +37,7 @@ Users can input process details (Arrival Time, Burst Time, and Priority) and vis
 
  Here is the **Getting Started** section formatted properly in Markdown with code blocks:  
 
-```md
+
 ## Getting Started  
 
 ### 1. Clone the Repository  
